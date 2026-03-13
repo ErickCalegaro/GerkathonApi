@@ -23,7 +23,7 @@ A solução permite decodificar as extensas linhas do histórico da bateria do A
 
 ### 1. Instruções para Clone e Dependências
 ```bash
-git clone <url_do_seu_repositorio>
+git clone https://github.com/erickcalegaro/GerkathonApi.git
 cd GerkathonApi
 npm install
 ```
@@ -89,4 +89,3 @@ Para enviar dados contínuos, basta fazer um **POST** para a rota `/batteryData`
 ## 💡 Informações Secundárias e Contato
 
 *   **Evitar o track file gigange**: Os logs cruéis nativos como o `batterystats.txt` que passam de milhões de de linhas não são versionados devido as travas criadas agora no `gitignore`.
-*   **Dúvidas/Suporte**: Desenvolvedor responsável / Mantenedor do projeto pode ser posicionado e contactado no [Linkedin](https://www.linkedin.com/in/erick-calegaro/).
