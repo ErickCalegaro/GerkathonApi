@@ -1,0 +1,20 @@
+{
+  "name": "CM-HTTP",
+  "version": "1.0.2",
+  "description": "Serviço de comunicação HTTP utilizado para trafegar mensagens JSON entre os terminais Android Gertec e o ambiente em nuvem",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "mysql2": "^2.3.3",
+    "nodemon": "^3.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}
