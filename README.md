@@ -1,4 +1,4 @@
-# Gerkathon API - Android Battery Log Parser & Tracker
+# <img src="argoenergy_logo.png" alt="ARGOENERGY Logo" width="80" align="center"> ARGOENERGY - Android Battery Log Parser & Tracker
 
 Esta é a API central responsável por receber, traduzir e armazenar os dados de consumo de bateria (extraídos via log do *batterystats* do Android) em um banco de dados **MySQL**.
 

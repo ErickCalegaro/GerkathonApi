@@ -7,30 +7,43 @@ const statusEr = 404;
 // tables
 // Endpoint para carga de tabelas single message
 router.post('/batteryData', async (req, res) => {
-    try {
-        console.log('JSON recebido:', req.body);
-        const response = await manager.processData(req.body, statusOk);
-        console.log('JSON enviado:', JSON.stringify(response));
-        res.status(response.status || statusOk).json(response);
-    } catch (error) {
-        console.error('Erro:', error);
-        res.status(statusEr).json({ error: 'Recurso não implementado' });
-    }
+  try {
+    console.log('JSON recebido:', req.body);
+    const response = await manager.processData(req.body, statusOk);
+    console.log('JSON enviado:', JSON.stringify(response));
+    res.status(response.status || statusOk).json(response);
+  } catch (error) {
+    console.error('Erro:', error);
+    res.status(statusEr).json({ error: 'Recurso não implementado' });
+  }
+});
+
+// Rota para servir o logo
+router.get('/argoenergy_logo.png', (req, res) => {
+  res.sendFile(require('path').join(__dirname, '../argoenergy_logo.png'));
+});
+
+// Rota para servir o favicon
+router.get('/favicon.png', (req, res) => {
+  res.sendFile(require('path').join(__dirname, '../favicon.png'));
 });
 
 // Endpoint GET que exibe a documentação da API em HMTL
 router.get('/batteryData', (req, res) => {
-    const htmlDoc = `
+  const htmlDoc = `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerkathon API - Documentação</title>
+    <title>ARGOENERGY - Android Battery Log Parser & Tracker</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; line-height: 1.6; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .header { display: flex; align-items: center; border-bottom: 2px solid #3498db; padding-bottom: 15px; margin-bottom: 20px; }
+        h1 { color: #2c3e50; margin: 0; flex-grow: 1; text-align: center; }
+        .logo { max-width: 140px; border-radius: 6px; }
         h2 { color: #2980b9; margin-top: 30px; display: flex; align-items: center; }
         pre { background: #282c34; color: #abb2bf; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; }
         .method { display: inline-block; background: #2ecc71; color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; margin-right: 15px; font-size: 0.8em; }
@@ -45,7 +58,10 @@ router.get('/batteryData', (req, res) => {
 </head>
 <body>
     <div class="container">
-        <h1>🔋 Gerkathon API</h1>
+        <div class="header">
+            <img src="/argoenergy_logo.png" alt="ARGOENERGY Logo" class="logo">
+            <h1>ARGOENERGY API</h1>
+        </div>
         <p>Serviço central de captura e armazenamento de logs telemétricos de bateria do Android (<em>batterystats</em>).</p>
 
         <h2><span class="method get">GET</span><span class="endpoint">/batteryData</span></h2>
@@ -110,7 +126,7 @@ router.get('/batteryData', (req, res) => {
 </body>
 </html>
     `;
-    res.status(200).send(htmlDoc);
+  res.status(200).send(htmlDoc);
 });
 
 module.exports = router;
