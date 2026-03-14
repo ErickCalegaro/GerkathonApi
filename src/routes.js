@@ -52,57 +52,59 @@ router.get('/batteryData', (req, res) => {
         <p>Exibe esta documentação visual orientativa com os esquemas esperados pela API.</p>
 
         <h2><span class="method">POST</span><span class="endpoint">/batteryData</span></h2>
-        <p>Este endpoint aceita um array de eventos de métricas processadas a partir dos logs de dumpsys do Android e os insere nativamente no banco de dados MySQL para cruzamento de métricas e visualização no Grafana.</p>
-
-        <h3>Estrutura do JSON Esperado</h3>
-        <p>A requisição deve enviar um <strong>Objeto</strong> ou <strong>Array de Objetos</strong> com a seguinte estrutura hierárquica completa:</p>
+        <p>Este endpoint aceita um envelope contendo o número de serie do terminal e um array de eventos de métricas processadas a partir dos logs de dumpsys do Android. Os dados são inseridos no banco de dados MySQL para análise telemétrica.</p>
         
-        <pre><code>[
-  {
-    "timestamp": "2026-03-13T08:16:13.901Z",
-    "metrics": {
-      "battery_level_pct": 100,
-      "temperature_celsius": 24.8,
-      "voltage_mv": 4291,
-      "current_ma": -4
-    },
-    "device_state": {
-      "screen_on": true,
-      "wifi_is_scanning": false,
-      "cellular_high_power": true,
-      "gps_on": true
-    },
-    "apps": {
-      "top_app_in_screen": "com.google.android.apps.maps",
-      "foreground_services_active": [
-        "com.whatsapp"
-      ],
-      "background_jobs_active": [
-        "com.microsoft.office.outlook/androidx.work.impl.background.systemjob.SystemJobService"
-      ],
-      "wake_locks_active": [
-        "AudioIn"
-      ]
+        <pre><code>{
+  "serial_number": "G000000000000001",
+  "events": [
+    {
+      "timestamp": "2026-03-13T08:16:13.901Z",
+      "metrics": {
+        "battery_level_pct": 100,
+        "temperature_celsius": 24.8,
+        "voltage_mv": 4291,
+        "current_ma": -4
+      },
+      "device_state": {
+        "screen_on": true,
+        "wifi_is_scanning": false,
+        "cellular_high_power": true,
+        "gps_on": true
+      },
+      "apps": {
+        "top_app_in_screen": "com.google.android.apps.maps",
+        "foreground_services_active": [
+          "com.whatsapp"
+        ],
+        "background_jobs_active": [
+          "com.microsoft.office.outlook/androidx.work.impl.background.systemjob.SystemJobService"
+        ],
+        "wake_locks_active": [
+          "AudioIn"
+        ]
+      }
     }
-  }
-]</code></pre>
+  ]
+}</code></pre>
 
         <h3>📋 Dicionário de Dados do Payload</h3>
         <table>
             <tr><th>Campo</th><th>Tipo de Dado</th><th>Descrição</th></tr>
-            <tr><td><code>timestamp</code></td><td><span class="badge">String (ISO)</span></td><td>Data e hora exata do evento na bateria, recomendável a formatação em padrão ISO-8601 (Ex: 2026-03-13T08:16:13Z).</td></tr>
-            <tr><td><code>metrics.battery_level_pct</code></td><td><span class="badge">Integer</span></td><td>Nível da bateria em porcentagem (Escala de 0 a 100).</td></tr>
-            <tr><td><code>metrics.temperature_celsius</code></td><td><span class="badge">Float</span></td><td>Temperatura operante e atual do dispositivo celular em graus Celsius (°C).</td></tr>
-            <tr><td><code>metrics.voltage_mv</code></td><td><span class="badge">Integer</span></td><td>Tensão instantânea da bateria medida em milivolts.</td></tr>
-            <tr><td><code>metrics.current_ma</code></td><td><span class="badge">Integer</span></td><td>Corrente (mA). O dreno/descarga contínua é indicado por <strong>valores negativos</strong>. Valores positivos sinalizam evento de carregamento enraizado.</td></tr>
-            <tr><td><code>device_state.screen_on</code></td><td><span class="badge">Boolean</span></td><td>Informa se o hardware da tela do aparelho estava consumindo energia (aceso) no momento específico.</td></tr>
-            <tr><td><code>device_state.wifi_is_scanning</code></td><td><span class="badge">Boolean</span></td><td>Informa se o chip de WiFi do aparelho estava engatilhado e ativamente procurando/negociando redes pelo ambiente.</td></tr>
-            <tr><td><code>device_state.cellular_high_power</code></td><td><span class="badge">Boolean</span></td><td>Informa se a antena mobile do chip (3G/4G/5G) assumiu transmissão operante usando alta potência de voltagem.</td></tr>
-            <tr><td><code>device_state.gps_on</code></td><td><span class="badge">Boolean</span></td><td>Informa se o hardware do componente GNSS (Global Navigation) foi acionado capturando posições geográficas de latitude/longitude.</td></tr>
-            <tr><td><code>apps.top_app_in_screen</code></td><td><span class="badge">String | Null</span></td><td>Package do aplicativo primário que estava ocupando o foco total ou parcial da tela neste exato milissegundo.</td></tr>
-            <tr><td><code>apps.foreground_services_active</code> *(array)*</td><td><span class="badge">Array&lt;String&gt;</span></td><td>Lista de serviços bloqueantes e vitais em primeiro plano sem morte súbita (Ex: Chamada de vídeo, música tocando).</td></tr>
-            <tr><td><code>apps.background_jobs_active</code> *(array)*</td><td><span class="badge">Array&lt;String&gt;</span></td><td>Múltiplas sub-rotinas escondidas que o sistema operacional rodou (Ex: Uploading, Verificação de Emails).</td></tr>
-            <tr><td><code>apps.wake_locks_active</code> *(array)*</td><td><span class="badge">Array&lt;String&gt;</span></td><td>Lista de amarras "WakeLocks" disparadas e seguradas pelas aplicações forçando o CPU/Periférico a não dormir (Deep Sleep).</td></tr>
+            <tr><td><code>serial_number</code></td><td><span class="badge">String</span></td><td>Número de série único do terminal de pagamento ou dispositivo Android (Ex: G7D0...).</td></tr>
+            <tr><td><code>events</code> *(array)*</td><td><span class="badge">Array&lt;Object&gt;</span></td><td>Lista contendo um ou múltiplos blocos de eventos de bateria.</td></tr>
+            <tr><td><code>events[].timestamp</code></td><td><span class="badge">String (ISO)</span></td><td>Data e hora exata do evento na bateria, recomendável a formatação em padrão ISO-8601.</td></tr>
+            <tr><td><code>events[].metrics.battery_level_pct</code></td><td><span class="badge">Integer</span></td><td>Nível da bateria em porcentagem (Escala de 0 a 100).</td></tr>
+            <tr><td><code>events[].metrics.temperature_celsius</code></td><td><span class="badge">Float</span></td><td>Temperatura operante e atual do dispositivo celular em graus Celsius (°C).</td></tr>
+            <tr><td><code>events[].metrics.voltage_mv</code></td><td><span class="badge">Integer</span></td><td>Tensão instantânea da bateria medida em milivolts.</td></tr>
+            <tr><td><code>events[].metrics.current_ma</code></td><td><span class="badge">Integer</span></td><td>Corrente (mA). O dreno/descarga contínua é indicado por <strong>valores negativos</strong>. Valores positivos sinalizam evento de carregamento enraizado.</td></tr>
+            <tr><td><code>events[].device_state.screen_on</code></td><td><span class="badge">Boolean</span></td><td>Informa se o hardware da tela do aparelho estava consumindo energia (aceso) no momento específico.</td></tr>
+            <tr><td><code>events[].device_state.wifi_is_scanning</code></td><td><span class="badge">Boolean</span></td><td>Informa se o chip de WiFi do aparelho estava engatilhado e ativamente procurando/negociando redes pelo ambiente.</td></tr>
+            <tr><td><code>events[].device_state.cellular_high_power</code></td><td><span class="badge">Boolean</span></td><td>Informa se a antena mobile do chip (3G/4G/5G) assumiu transmissão operante usando alta potência de voltagem.</td></tr>
+            <tr><td><code>events[].device_state.gps_on</code></td><td><span class="badge">Boolean</span></td><td>Informa se o hardware do componente GNSS (Global Navigation) foi acionado capturando posições geográficas de latitude/longitude.</td></tr>
+            <tr><td><code>events[].apps.top_app_in_screen</code></td><td><span class="badge">String | Null</span></td><td>Package do aplicativo primário que estava ocupando o foco total ou parcial da tela neste exato milissegundo.</td></tr>
+            <tr><td><code>events[].apps.foreground_services_active</code> *(array)*</td><td><span class="badge">Array&lt;String&gt;</span></td><td>Lista de serviços bloqueantes e vitais em primeiro plano sem morte súbita (Ex: Chamada de vídeo, música tocando).</td></tr>
+            <tr><td><code>events[].apps.background_jobs_active</code> *(array)*</td><td><span class="badge">Array&lt;String&gt;</span></td><td>Múltiplas sub-rotinas escondidas que o sistema operacional rodou (Ex: Uploading, Verificação de Emails).</td></tr>
+            <tr><td><code>events[].apps.wake_locks_active</code> *(array)*</td><td><span class="badge">Array&lt;String&gt;</span></td><td>Lista de amarras "WakeLocks" disparadas e seguradas pelas aplicações forçando o CPU/Periférico a não dormir (Deep Sleep).</td></tr>
         </table>
     </div>
 </body>

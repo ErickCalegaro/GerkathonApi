@@ -57,8 +57,9 @@ async function processData(jsonSend, status) {
         await connection.query(createTableQuery);
 
         // O Express parser transforma o json em request body pra gente (objeto ou lista)
-        // Precisamos garantir que seja sempre interpretado como uma lista
-        const events = Array.isArray(jsonSend) ? jsonSend : [jsonSend];
+        // O formato esperado agora é: { "serial_number": "...", "events": [...] }
+        const serialNumber = jsonSend.serial_number || 'default_device';
+        const events = Array.isArray(jsonSend.events) ? jsonSend.events : (Array.isArray(jsonSend) ? jsonSend : [jsonSend]);
 
         if (events.length === 0) {
             await connection.end();
@@ -76,7 +77,7 @@ async function processData(jsonSend, status) {
             const formattedTimestamp = timestamp.replace('T', ' ').replace('Z', '');
             
             return [
-                'default_device', 
+                serialNumber, 
                 formattedTimestamp,
                 
                 evt.metrics?.battery_level_pct ?? null,
